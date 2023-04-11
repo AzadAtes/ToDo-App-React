@@ -12,7 +12,11 @@ const Tasks = ({ title }: { title: string }): JSX.Element => {
   const [taskName, setTaskName] = useState<string>(selectedTask.task);
 
   useEffect(() => {
+    // not a good solution
     queryClient.invalidateQueries(["tasks"]);
+  }, []);
+
+  useEffect(() => {
     setTaskName(selectedTask.task);
   }, [selectedTask]);
 
@@ -22,8 +26,13 @@ const Tasks = ({ title }: { title: string }): JSX.Element => {
     ["tasks"],
     getTasks,
     {
-      onSuccess: () => {
-        console.log("success");
+      onSuccess: (data) => {
+        if (taskIdParam && !taskIsSelected) {
+          const task = data.tasks.find((task) => task._id === taskIdParam);
+          if (task) {
+            setSelectedTask(task);
+          }
+        }
       },
     }
   );
