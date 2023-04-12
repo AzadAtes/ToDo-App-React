@@ -29,11 +29,18 @@ function App() {
             <SideBar />
             <div className="ml-36 flex flex-col bg-slate-800 text-slate-100">
               <Routes>
-                <Route path="/important" element={<ImportantView />} />
-                <Route path="/myday" element={<MyDayView />} />
-                <Route path="/planned" element={<PlannedView />} />
-                <Route path="/search" element={<SearchView />} />
                 <Route path="/" element={<TasksView />} />
+                <Route path="/myday" element={<MyDayView />} />
+                <Route path="/myday/:taskIdParam" element={<MyDayView />} />
+                <Route path="/important" element={<ImportantView />} />
+                <Route
+                  path="/important/:taskIdParam"
+                  element={<ImportantView />}
+                />
+                <Route path="/planned" element={<PlannedView />} />
+                <Route path="/planned/:taskIdParam" element={<PlannedView />} />
+                <Route path="/search" element={<SearchView />} />
+                <Route path="/search/:taskIdParam" element={<SearchView />} />
                 <Route path="/tasks" element={<TasksView />} />
                 <Route path="/tasks/:taskIdParam" element={<TasksView />} />
               </Routes>

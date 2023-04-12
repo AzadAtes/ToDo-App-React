@@ -6,7 +6,7 @@ import { getTasks, deleteTask, patchTask } from "../../fetchTasks";
 import TaskList from "./TaskList";
 import TaskAdd from "./TaskAdd";
 
-const Tasks = ({ title }: { title: string }): JSX.Element => {
+const Tasks = (props: { title: string }): JSX.Element => {
   const { taskIdParam } = useParams();
   const [selectedTask, setSelectedTask] = useState<TaskType>({} as TaskType);
   const [taskName, setTaskName] = useState<string>(selectedTask.task);
@@ -54,13 +54,17 @@ const Tasks = ({ title }: { title: string }): JSX.Element => {
     patchTaskMutation.mutate(task);
   };
 
-  if (isLoading || data == undefined) return <p className="p-10">Loading...</p>;
-  if (isError) return <p className="p-10">{`An error occurred.\n${error}`}</p>;
+  if (isLoading) {
+    return <p className="p-10">Loading...</p>;
+  }
+  if (isError || data == undefined) {
+    return <p className="p-10">{`An error occurred.\n${error}`}</p>;
+  }
 
   return (
     <div className="flex justify-between">
       <div className="flex flex-col gap-2 p-10">
-        <h1 className="pb-8">{title}</h1>
+        <h1 className="pb-8">{props.title}</h1>
         <TaskAdd />
         <TaskList tasks={data.tasks} setSelectedTask={setSelectedTask} />
       </div>
