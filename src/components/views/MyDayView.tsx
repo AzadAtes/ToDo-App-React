@@ -1,7 +1,9 @@
+import Tasks from "../tasks/Tasks";
+
 const MyDayView = () => {
   return (
     <div>
-      <h1>MyDayView</h1>
+      <Tasks title={"My Day"} />
     </div>
   );
 };

@@ -1,64 +1,58 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getTasks, deleteTask, patchTask } from "../../fetchTasks";
+import {
+  getTasksFetch,
+  deleteTaskFetch,
+  patchTaskFetch,
+} from "../../fetchTasks";
+import TaskDetails from "./TaskDetails";
 import TaskList from "./TaskList";
 import TaskAdd from "./TaskAdd";
 
 const Tasks = (props: { title: string }): JSX.Element => {
   const { taskIdParam } = useParams();
+  const queryClient = useQueryClient();
   const [selectedTask, setSelectedTask] = useState<TaskType>({} as TaskType);
-  const [taskName, setTaskName] = useState<string>(selectedTask.task);
-
-  useEffect(() => {
-    // not a good solution
-    queryClient.invalidateQueries(["tasks"]);
-  }, []);
-
-  useEffect(() => {
-    setTaskName(selectedTask.task);
-  }, [selectedTask]);
-
   const taskIsSelected = Object.keys(selectedTask).length;
 
   const { data, isLoading, isError, error } = useQuery<{ tasks: TaskType[] }>(
     ["tasks"],
-    getTasks,
-    {
-      onSuccess: (data) => {
-        if (taskIdParam && !taskIsSelected) {
-          const task = data.tasks.find((task) => task._id === taskIdParam);
-          if (task) {
-            setSelectedTask(task);
-          }
-        }
-      },
-    }
+    getTasksFetch
   );
 
-  const queryClient = useQueryClient();
-
   const patchTaskMutation = useMutation({
-    mutationFn: patchTask,
+    mutationFn: patchTaskFetch,
     onSuccess: () => queryClient.invalidateQueries(["tasks"]),
   });
 
   const deleteTaskMutation = useMutation({
-    mutationFn: deleteTask,
+    mutationFn: deleteTaskFetch,
     onSuccess: () => queryClient.invalidateQueries(["tasks"]),
   });
 
-  const updateTask = (task: TaskType, newTaskName: string) => {
+  const patchTask = (task: TaskType, newTaskName: string) => {
     task.task = newTaskName;
     patchTaskMutation.mutate(task);
+  };
+
+  const deleteTask = (task: TaskType) => {
+    setSelectedTask({} as TaskType);
+    deleteTaskMutation.mutate(task);
   };
 
   if (isLoading) {
     return <p className="p-10">Loading...</p>;
   }
-  if (isError || data == undefined) {
-    return <p className="p-10">{`An error occurred.\n${error}`}</p>;
+  if (isError || data === undefined) {
+    return <p className="p-10">{`An error occurred: ${error}`}</p>;
+  }
+
+  if (taskIdParam && !taskIsSelected) {
+    const task = data.tasks.find((task) => task._id === taskIdParam);
+    if (task) {
+      setSelectedTask(task);
+    }
   }
 
   return (
@@ -69,25 +63,11 @@ const Tasks = (props: { title: string }): JSX.Element => {
         <TaskList tasks={data.tasks} setSelectedTask={setSelectedTask} />
       </div>
       {taskIdParam && taskIsSelected && (
-        <div className="w-96 border-x border-gray-400 p-10 transition-all duration-1000 ease-in-out">
-          <p>({selectedTask._id})</p>
-          <textarea
-            className="text-black"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            onBlur={() => updateTask(selectedTask, taskName)}
-          />
-          <Link
-            to={`/tasks`}
-            className="border"
-            onClick={() => {
-              setSelectedTask({} as TaskType);
-              deleteTaskMutation.mutate(selectedTask);
-            }}
-          >
-            Delete
-          </Link>
-        </div>
+        <TaskDetails
+          selectedTask={selectedTask}
+          patchTask={patchTask}
+          deleteTask={deleteTask}
+        />
       )}
     </div>
   );

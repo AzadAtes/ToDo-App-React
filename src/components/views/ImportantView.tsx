@@ -1,7 +1,9 @@
+import Tasks from "../tasks/Tasks";
+
 const ImportantView = () => {
   return (
     <div>
-      <h1>ImportantView</h1>
+      <Tasks title={"Important"} />
     </div>
   );
 };

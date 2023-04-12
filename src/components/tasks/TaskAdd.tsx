@@ -1,23 +1,32 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { KeyboardEvent, useState } from "react";
-import { postTask } from "../../fetchTasks";
+import { postTaskFetch } from "../../fetchTasks";
 
 const AddTask = () => {
   const queryClient = useQueryClient();
   const [newTaskName, setNewTaskName] = useState("");
 
   const postTaskMutation = useMutation({
-    mutationFn: postTask,
+    mutationFn: postTaskFetch,
     onSuccess: () => queryClient.invalidateQueries(["tasks"]),
   });
 
+  const postTask = () => {
+    postTaskMutation.mutate({
+      task: newTaskName,
+      important: true,
+      myDay: true,
+    });
+    setNewTaskName("");
+  };
+
   const submitTask = (e: KeyboardEvent) => {
+    e.preventDefault;
     if (e.code == "Enter") {
       if (!newTaskName.replace(/\s+/g, "").length) {
         return;
       }
-      postTaskMutation.mutate({ task: newTaskName });
-      setNewTaskName("");
+      postTask();
     }
   };
 
@@ -32,8 +41,7 @@ const AddTask = () => {
       <button
         className="w-12 border border-slate-600 bg-slate-300"
         onClick={() => {
-          postTaskMutation.mutate({ task: newTaskName });
-          setNewTaskName("");
+          postTask();
         }}
       >
         add

@@ -1,6 +1,6 @@
 const tasksRoute = "https://todo-app-backend-service.onrender.com/api/v1/tasks";
 
-const getTasks = async () => {
+const getTasksFetch = async () => {
   const apiRes = await fetch(tasksRoute);
 
   if (!apiRes.ok) {
@@ -9,7 +9,7 @@ const getTasks = async () => {
   return apiRes.json();
 };
 
-const getTask = async ({ queryKey }: { queryKey: unknown[] }) => {
+const getTaskFetch = async ({ queryKey }: { queryKey: unknown[] }) => {
   const id = queryKey[1];
   const apiRes = await fetch(`${tasksRoute}/${id}`);
 
@@ -19,7 +19,7 @@ const getTask = async ({ queryKey }: { queryKey: unknown[] }) => {
   return apiRes.json();
 };
 
-const postTask = async (task: TaskType) => {
+const postTaskFetch = async (task: TaskType) => {
   const apiRes = await fetch(`${tasksRoute}`, {
     method: "POST",
     headers: {
@@ -28,13 +28,15 @@ const postTask = async (task: TaskType) => {
     },
     body: JSON.stringify(task),
   });
+
+  console.log(task);
   if (!apiRes.ok) {
     throw new Error(`POST:${task.task}\nfetch not ok`);
   }
   return apiRes.json;
 };
 
-const patchTask = async (task: TaskType) => {
+const patchTaskFetch = async (task: TaskType) => {
   const apiRes = await fetch(`${tasksRoute}/${task._id}`, {
     method: "PATCH",
     headers: {
@@ -49,7 +51,7 @@ const patchTask = async (task: TaskType) => {
   return apiRes.json;
 };
 
-const deleteTask = async (task: TaskType) => {
+const deleteTaskFetch = async (task: TaskType) => {
   const apiRes = await fetch(`${tasksRoute}/${task._id}`, {
     method: "DELETE",
     headers: {
@@ -63,4 +65,10 @@ const deleteTask = async (task: TaskType) => {
   return apiRes.json;
 };
 
-export { getTasks, getTask, postTask, patchTask, deleteTask };
+export {
+  getTasksFetch,
+  getTaskFetch,
+  postTaskFetch,
+  patchTaskFetch,
+  deleteTaskFetch,
+};

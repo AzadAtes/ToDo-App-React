@@ -1,7 +1,9 @@
+import Tasks from "../tasks/Tasks";
+
 const PlannedView = () => {
   return (
     <div>
-      <h1>PlannedView</h1>
+      <Tasks title={"Planned"} />
     </div>
   );
 };
