@@ -1,6 +1,6 @@
 declare type TaskType = {
   _id?: string;
-  complete?: false;
+  complete?: boolean;
   date?: null;
   fullDate?: Date;
   important?: Boolean;

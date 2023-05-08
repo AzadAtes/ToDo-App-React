@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const TaskDetails = (props: {
+interface TaskDetailsProps {
   selectedTask: TaskType;
   patchTask: (task: TaskType, taskName: string) => void;
   deleteTask: (task: TaskType) => void;
-}) => {
+}
+
+const TaskDetails: FC<TaskDetailsProps> = (props) => {
   const [taskName, setTaskName] = useState<string>(props.selectedTask.task);
 
   useEffect(() => {

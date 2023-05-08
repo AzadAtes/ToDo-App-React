@@ -1,10 +1,12 @@
-import { Key } from "react";
+import { FC, Key } from "react";
 import { Link } from "react-router-dom";
 
-const TaskList = (props: {
+interface TaskListProps {
   tasks: TaskType[];
   setSelectedTask: (value: React.SetStateAction<TaskType>) => void;
-}) => {
+}
+
+const TaskList: FC<TaskListProps> = (props) => {
   return (
     <div>
       {props.tasks.map((task: TaskType) => {

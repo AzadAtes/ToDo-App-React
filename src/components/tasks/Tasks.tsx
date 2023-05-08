@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, FC } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import {
@@ -10,11 +10,15 @@ import TaskDetails from "./TaskDetails";
 import TaskList from "./TaskList";
 import TaskAdd from "./TaskAdd";
 
-const Tasks = (props: { title: string }): JSX.Element => {
+interface TasksProps {
+  title: string;
+}
+
+const Tasks: FC<TasksProps> = (props) => {
   const { taskIdParam } = useParams();
   const queryClient = useQueryClient();
   const [selectedTask, setSelectedTask] = useState<TaskType>({} as TaskType);
-  const taskIsSelected = Object.keys(selectedTask).length;
+  const taskIsSelected = !!Object.keys(selectedTask).length;
 
   const { data, isLoading, isError, error } = useQuery<{ tasks: TaskType[] }>(
     ["tasks"],
@@ -44,7 +48,7 @@ const Tasks = (props: { title: string }): JSX.Element => {
   if (isLoading) {
     return <p className="p-10">Loading...</p>;
   }
-  if (isError || data === undefined) {
+  if (isError) {
     return <p className="p-10">{`An error occurred: ${error}`}</p>;
   }
 
